@@ -16,11 +16,11 @@ or
 
 Make an API call is common actions when working with React.
 
-With hooks, we usually use something like `const [loading, setLoading] = useState(false)` to manipulate our UI: show a loading indicator, an error message, ... We are trying to make it a little bit easier when working with async data.
+With hooks, we usually use something like `const [loading, setLoading] = useState(false)` to manipulate our UI: show a loading indicator, an error message, ... This thing is trying to make your life a little bit easier when working with async data.
 
 ### Basic
 
-#### Refresh your data when your query changed automatically
+#### Automatically refresh your data when your query changes
 
 ```js
 import React, { useMemo, useCallback } from 'react';
