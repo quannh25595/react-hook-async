@@ -1,0 +1,32 @@
+{
+  "name": "react-hook-async",
+  "version": "1.0.1",
+  "description": "React hooks for async actions",
+  "main": "./lib/index.js",
+  "author": "quan.nh.25595",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack --watch"
+  },
+  "keywords": [
+    "promise",
+    "async",
+    "hooks",
+    "react-hooks"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {
+    "react": "^16.10.2"
+  }
+}
