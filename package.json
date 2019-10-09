@@ -1,6 +1,6 @@
 {
   "name": "react-hook-async",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React hooks for async actions",
   "main": "./lib/index.js",
   "author": "quan.nh.25595",
