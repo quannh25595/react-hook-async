@@ -15,6 +15,10 @@
     "hooks",
     "react-hooks"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quannh25595/react-hook-async"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
