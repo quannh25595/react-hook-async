@@ -1,7 +1,7 @@
 # React-hook-async
 
 - Simple way to work with async in your react components, using new React hooks.
-- Support chaining async task.
+- Support chaining async taskd.
 - Small with no dependency needed
 
 ## INSTALLATION
@@ -10,7 +10,7 @@
 
 or
 
- `npm i react-hook-async --save`
+`npm i react-hook-async --save`
 
 ## Usage
 
@@ -70,7 +70,43 @@ export default withRouter(AuthorPage);
 
 #### Without keeping data to tracking by useEffect :)
 
-Just passing your custom api call function to `forceExecute` function
+Just pass your custom api call function to `forceExecute` function
+
+```jsx
+import ...
+
+const createAuthorApi = (data) => ({
+  method: 'POST'
+  url: 'http://example.com/author',
+  data,
+})
+
+const AuthorPage = (props) => {
+
+  ...
+
+  const onCreate = values => {
+    insertAuthor.forceExecute(() => axios(createAuthorApi(values)))
+  };
+
+  ...
+
+  return (
+    <>
+      <AddAuthor onCreate={onCreate} />
+
+      ...
+
+    </>
+  )
+}
+
+export default withRouter(AuthorPage);
+```
+
+### Chaining API (INSERT then REFRESH)
+
+#### `forceExecute` return a `promise`, so you can continue your jobs
 
 ```jsx
 import ...
@@ -111,46 +147,6 @@ const AuthorPage = (props) => {
 export default withRouter(AuthorPage);
 ```
 
-### Chaining API (INSERT then REFRESH)
-
-#### `forceExecute` return a `promise`, so you can continue your jobs
-
-```jsx
-import ...
-
-const createAuthorApi = (data) => ({
-  method: 'POST'
-  url: 'http://example.com/author',
-  data,
-})
-
-const AuthorPage = (props) => {
-
-  ...
-
-  const onCreate = values => {
-    insertAuthor.forceExecute(() => axios(createAuthorApi(values)))
-  };
-
-  ...
-
-  return (
-    <>
-      <AddAuthor onCreate={onCreate} />
-
-      ...
-
-    </>
-  )
-}
-
-export default withRouter(AuthorPage);
-```
-
 ## FAQ
 
 Any pull requests & issues are warmly welcome :)
-
-## License
-
-MIT

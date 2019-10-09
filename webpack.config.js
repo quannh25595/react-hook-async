@@ -1,11 +1,8 @@
-// webpack.config.js
 var path = require("path");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 module.exports = {
-  entry: "./index.js",
+  entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname),
     filename: "index.js",
     libraryTarget: "commonjs2"
   },
@@ -18,16 +15,9 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["env"]
+            presets: ["@babel/preset-react"]
           }
         }
-      },
-      {
-        test: /\.*css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: ["css-loader", "sass-loader"]
-        })
       }
     ]
   },
