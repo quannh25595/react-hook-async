@@ -1,56 +1,25 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 
-export const useAsync = (asyncCall, defaultOptions) => {
-  const [options, setOptions] = useState({
-    executeOnChange: true,
-    ...defaultOptions
-  });
+export const useAsync = (asyncFunction, initValue = null) => {
   const [loading, setLoading] = useState(false);
-  const [invalidate, setInvalidate] = useState(false);
-  const [result, setResult] = useState(options.defaultResult);
-  const [error, setError] = useState();
+  const [result, setResult] = useState(initValue);
+  const [error, setError] = useState(null);
+  const [lastFetch, setLastFetch] = useState();
 
-  const call = useCallback(
-    overideAsyncCall => {
-      setLoading(true);
-      const func = overideAsyncCall || asyncCall;
-      return func()
-        .then(res => {
-          setResult(res);
-          return res;
-        })
-        .catch(err => {
-          setError(err);
-          return err;
-        })
-        .finally(() => {
-          setInvalidate(false);
-          setLoading(false);
-        });
-    },
-    [asyncCall]
-  );
+  // Using .apply() to pass arguments
+  function execute() {
+    setLoading(true);
+    setResult(null);
+    setError(null);
+    asyncFunction
+      .apply(this, arguments)
+      .then(data => {
+        setResult(data);
+        setLastFetch(new Date());
+      })
+      .catch(err => setError(err))
+      .finally(() => setLoading(false));
+  }
 
-  const forceExecute = overideAsyncCall => call(overideAsyncCall);
-
-  useEffect(() => {
-    if (invalidate) {
-      call();
-    }
-  }, [call, invalidate]);
-
-  useEffect(() => {
-    if (options.executeOnChange) {
-      setInvalidate(true);
-    }
-  }, [asyncCall, options.executeOnChange]);
-
-  return {
-    options,
-    loading,
-    result,
-    error,
-    forceExecute,
-    setOptions
-  };
+  return [{ loading, result, error, lastFetch }, execute];
 };

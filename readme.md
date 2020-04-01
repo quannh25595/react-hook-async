@@ -1,7 +1,7 @@
 # React-hook-async
 
 - Simple way to work with async in your react components, using new React hooks.
-- Support chaining async taskd.
+- Support chaining async tasks.
 - Small with no dependency needed
 
 ## INSTALLATION
@@ -14,138 +14,65 @@ or
 
 ## Usage
 
-Make an API call is common actions when working with React.
+Performing an async task is common actions when working with React.
 
 With hooks, we usually use something like `const [loading, setLoading] = useState(false)` to manipulate our UI: show a loading indicator, an error message, ... This thing is trying to make your life a little bit easier when working with async data.
 
-### Basic
-
-#### Automatically refresh your data when your query changes
-
 ```js
-import React, { useMemo, useCallback } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios'
-import { withRouter } from 'react-router-dom';
 import { useAsync } from 'react-hook-async';
-import qs from 'query-string';
 
-import SearchAuthor form './search';
-import ListAuthor from './list';
+const Example = (props) => {
 
-const AuthorPage = (props) => {
-  const query = useMemo(() => qs.parse(props.location.search), [
-    props.location.search,
-  ]);
+  const [text, setText] = useState("");
 
-  // useCallback for function memoization.
-  // Read more at Dan Abramov's blog: https://overreacted.io/a-complete-guide-to-useeffect/#but-i-cant-put-this-function-inside-an-effect
-  const fetchListAuthor = useCallback(() => axios({
-    method: 'GET',
-    url: 'http://example.com/author',
-    params: query
-  }), [
-    query,
-  ]);
+  const [apiData, fetchApi] = useAsync(query => axios.get("<your_api_endpoint_here>", {
+    params: {
+      q: query
+    }
+  }), [])
 
-  const fetchListAuthorAsync = useAsync(fetchListAuthor);
-
-  const onSearch = values => {
-    props.history.replace(`${props.location.pathname}?${queryString.stringify(value)}`);
+  const onSearch = () => {
+    fetchApi(text);
   };
 
-  const {loading, result} = fetchListAuthorAsync;
+  const {loading, result, error, lastFetch} = apiData;
 
   return (
-    <>
-      <SearchAuthor onSearch={onSearch} />
-      <ListAuthor loading={loading} data={result.data} />
-    </>
+    <div>
+      <input type="text" value={text} onChange={e => setText(e.target.value)}/>
+      {
+        loading
+        ? <div>Loading ...</div>
+        : error
+          ? <div>{error.message}</div>
+          : <div>{result}</div>
+      }
+    </div>
   )
 }
 
-export default withRouter(AuthorPage);
+export default Example;
 ```
 
-### Dealing with Payload (POST, PUT, PATCH)
+## API
 
-#### Without keeping data to tracking by useEffect :)
+- `useAsync(func: () => Promise, initValue) : [apiData, execute]`
 
-Just pass your custom api call function to `forceExecute` function
+Params:
 
-```jsx
-import ...
+| Name        | Type            | Description                                                                       |
+| ----------- | --------------- | --------------------------------------------------------------------------------- |
+| `func`      | `() => Promise` | A function return promise. The value from promise will be set to `apiData.result` |
+| `initValue` | `any`           | Initial value for `apiData.result`                                                |
 
-const createAuthorApi = (data) => ({
-  method: 'POST'
-  url: 'http://example.com/author',
-  data,
-})
+Returned Value:
 
-const AuthorPage = (props) => {
-
-  ...
-
-  const onCreate = values => {
-    insertAuthor.forceExecute(() => axios(createAuthorApi(values)))
-  };
-
-  ...
-
-  return (
-    <>
-      <AddAuthor onCreate={onCreate} />
-
-      ...
-
-    </>
-  )
-}
-
-export default withRouter(AuthorPage);
-```
-
-### Chaining API (INSERT then REFRESH)
-
-#### `forceExecute` return a `promise`, so you can continue your jobs
-
-```jsx
-import ...
-
-const createAuthorApi = (data) => ({
-  method: 'POST'
-  url: 'http://example.com/author',
-  data,
-})
-
-const AuthorPage = (props) => {
-
-  ...
-
-  const fetchListAuthorAsync = useAsync(fetchListAuthor);
-
-  const onCreate = values => {
-    insertAuthor
-      .forceExecute(() => axios(createAuthorApi(values)))
-      .then(result => {
-        fetchListAuthorAsync.forceExecute()
-      })
-  };
-
-  ...
-
-  return (
-    <>
-      <AddAuthor onCreate={onCreate} />
-      <ListAuthor loading={loading} data={result.data} />
-
-      ...
-
-    </>
-  )
-}
-
-export default withRouter(AuthorPage);
-```
+| Name      | Type                                                                  | Description                       |
+| --------- | --------------------------------------------------------------------- | --------------------------------- |
+| `apiData` | `{loading: boolean, error: null|Error, result: any, lastFetch: Date}` | Async task state                  |
+| `execute` | `Function`                                                            | Function to perform an async task |
 
 ## FAQ
 
