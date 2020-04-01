@@ -58,7 +58,7 @@ export default Example;
 
 ## API
 
-- `useAsync(func: () => Promise, initValue) : [apiData, execute]`
+- `useAsync(func, initValue) : [apiData, execute]`
 
 Params:
 
