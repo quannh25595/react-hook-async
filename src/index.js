@@ -1,25 +1,31 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
-export const useAsync = (asyncFunction, initValue = null) => {
+export const useAsync = (initValue, asyncFunction) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(initValue);
   const [error, setError] = useState(null);
   const [lastFetch, setLastFetch] = useState();
 
-  // Using .apply() to pass arguments
-  function execute() {
+  const execute = useCallback(async () => {
     setLoading(true);
-    setResult(null);
-    setError(null);
-    asyncFunction
-      .apply(this, arguments)
-      .then(data => {
-        setResult(data);
-        setLastFetch(new Date());
-      })
-      .catch(err => setError(err))
-      .finally(() => setLoading(false));
-  }
+    try {
+      const data = await asyncFunction(...arguments);
+      setResult(data);
+      setLoading(false);
+      setLastFetch(new Date());
+      return data;
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+      throw err;
+    }
+  });
 
-  return [{ loading, result, error, lastFetch }, execute];
+  const reset = useCallback(() => {
+    setLoading(false);
+    setResult(initValue);
+    setError(null);
+  }, [initValue]);
+
+  return [{ loading, result, error, lastFetch }, execute, reset];
 };
