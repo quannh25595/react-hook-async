@@ -6,20 +6,23 @@ export const useAsync = (initValue, asyncFunction) => {
   const [error, setError] = useState(null);
   const [lastFetch, setLastFetch] = useState();
 
-  const execute = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await asyncFunction(...arguments);
-      setResult(data);
-      setLoading(false);
-      setLastFetch(new Date());
-      return data;
-    } catch (err) {
-      setError(err);
-      setLoading(false);
-      throw err;
-    }
-  });
+  const execute = useCallback(
+    async (...args) => {
+      setLoading(true);
+      try {
+        const data = await asyncFunction(...args);
+        setResult(data);
+        setLoading(false);
+        setLastFetch(new Date());
+        return data;
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+        throw err;
+      }
+    },
+    [asyncFunction]
+  );
 
   const reset = useCallback(() => {
     setLoading(false);
