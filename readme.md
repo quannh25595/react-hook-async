@@ -27,11 +27,11 @@ const Example = (props) => {
 
   const [text, setText] = useState("");
 
-  const [apiData, fetchApi] = useAsync(query => axios.get("<your_api_endpoint_here>", {
+  const [apiData, fetchApi] = useAsync([], query => axios.get("<your_api_endpoint_here>", {
     params: {
       q: query
     }
-  }), [])
+  }))
 
   const onSearch = () => {
     fetchApi(text);
@@ -58,7 +58,7 @@ export default Example;
 
 ## API
 
-- `useAsync(func, initValue) : [apiData, execute]`
+- `useAsync(initValue, func) : [apiData, execute, reset]`
 
 Params:
 
@@ -73,6 +73,7 @@ Returned Value:
 | --------- | --------------------------------------------------------------------- | --------------------------------- |
 | `apiData` | `{loading: boolean, error: null|Error, result: any, lastFetch: Date}` | Async task state                  |
 | `execute` | `Function`                                                            | Function to perform an async task |
+| `reset`   | `Function`                                                            | Function to reset `apiData`       |
 
 ## FAQ
 
