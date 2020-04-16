@@ -5,6 +5,7 @@ export const useAsync = (initValue, asyncFunction) => {
   const [result, setResult] = useState(initValue);
   const [error, setError] = useState(null);
   const [lastFetch, setLastFetch] = useState();
+  const [defaultValue] = useState(initValue);
 
   const execute = useCallback(
     async (...args) => {
@@ -26,9 +27,9 @@ export const useAsync = (initValue, asyncFunction) => {
 
   const reset = useCallback(() => {
     setLoading(false);
-    setResult(initValue);
+    setResult(defaultValue);
     setError(null);
-  }, [initValue]);
+  }, [defaultValue]);
 
   return [{ loading, result, error, lastFetch }, execute, reset];
 };
